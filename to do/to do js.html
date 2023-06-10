@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Simple CRUD App</title>
+</head>
+<body>
+<h1>Simple CRUD App</h1>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Age</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody id="tbody"></tbody>
+</table>
+<script>
+// Create an array to store the data
+var data = [];
+
+// Create a function to add a new row to the table
+function addRow() {
+  // Create a new row element
+  var row = document.createElement("tr");
+
+  // Create a new text node for the name
+  var nameNode = document.createTextNode("John Doe");
+
+  // Create a new text node for the age
+  var ageNode = document.createTextNode("30");
+
+  // Add the name and age nodes to the row element
+  row.appendChild(nameNode);
+  row.appendChild(ageNode);
+
+  // Add the edit and delete buttons to the row element
+  var editButton = document.createElement("button");
+  editButton.textContent = "Edit";
+  row.appendChild(editButton);
+
+  var deleteButton = document.createElement("button");
+  deleteButton.textContent = "Delete";
+  row.appendChild(deleteButton);
+
+  // Add the row element to the table body
+  document.getElementById("tbody").appendChild(row);
+
+  // Add the row to the data array
+  data.push(row);
+}
+
+// Create a function to edit a row in the table
+function editRow(row) {
+  // Get the name and age text nodes from the row element
+  var nameNode = row.querySelector("td:first-child");
+  var ageNode = row.querySelector("td:last-child");
+
+  // Create a new input element for the name
+  var nameInput = document.createElement("input");
+  nameInput.name = "name";
+  nameInput.value = nameNode.textContent;
+
+  // Create a new input element for the age
+  var ageInput = document.createElement("input");
+  ageInput.name = "age";
+  ageInput.value = ageNode.textContent;
+
+  // Create a new form element
+  var form = document.createElement("form");
+  form.action = "";
+  form.method = "post";
+
+  // Add the name and age input elements to the form element
+  form.appendChild(nameInput);
+  form.appendChild(ageInput);
+
+  // Add the edit button to the form element
+  var editButton = document.createElement("button");
+  editButton.textContent = "Save";
+  form.appendChild(editButton);
+
+  // Replace the row element with the form element
+  row.replaceWith(form);
+}
+
+// Create a function to delete a row from the table
+function deleteRow(row) {
+  // Remove the row element from the table body
+  row.remove();
+
+  // Remove the row from the data array
+  data.splice(data.indexOf(row), 1);
+}
+
+// Add an event listener to the add button
+document.getElementById("add").addEventListener("click", addRow);
+
+// Add event listeners to the edit buttons
+document.getElementById("tbody").addEventListener("click", "button[name='edit']", editRow);
+
+// Add event listeners to the delete buttons
+document.getElementById("tbody").addEventListener("click", "button[name='delete']", deleteRow);
+
+// Create a function to save the changes to a row
+function saveRow(event) {
+  // Prevent the default action from happening
+  event.preventDefault();
+
+  // Get the form data
+  var formData = new FormData(event.target);
+
+  // Update the row in the data array
+  for (var i = 0; i < data.length; i++) {
+    if (data[i] === event.target.parentElement) {
+      data[i].querySelector("td:first-child").textContent = formData.get("name");
+      data[i].querySelector("td:last-child").textContent = formData.get("age");
+      break;
+    }
+  }
+}
+</script>
+</body>
+</html>
